@@ -27,121 +27,344 @@ var storeHrs = [
   '8pm'
 ];
 
-var market = {
-  locations: [
-    {address: '1st and Pike',
-      minCust: 23,
-      maxCust: 65,
-      avgCookies: 6.3,
-      cookiesPurchased: [],
-    },
+var pikes = {
+  address: '1st and Pike',
+  minCust: 23,
+  maxCust: 65,
+  avgCookies: 6.3,
+  cookiesPurchased: [],
+  resultsList: [],
 
-    {address: 'SeaTac Airport',
-      minCust: 3,
-      maxCust: 24,
-      avgCookies: 1.2,
-      cookiesPurchased: []
-    },
+  // generate a random number
+  randNumCustGenerator() {
+    return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
+  },
 
-    {address: 'Seattle Center',
-      minCust: 24,
-      maxCust: 38,
-      avgCookies: 3.7,
-      cookiesPurchased: []
-    },
-
-    {address: 'Capitol Hill',
-      minCust: 20,
-      maxCust: 38,
-      avgCookies: 2.3,
-      cookiesPurchased: []
-    },
-
-    {
-      address: 'Alki',
-      minCust: 2,
-      maxCust: 16,
-      avgCookies: 4.6,
-      cookiesPurchased: []
+  // build out the cookiesPurchased arr using random number generator
+  cookiesPurchasedAtEachHour() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
     }
-  ],
+  },
 
-  randNumCustGenerator(max, min) {
-    return Math.random() * (max-min) + min;
+  // create a new message that concatonates values from different arrays
+  // this text will be displayed in our webpage.
+  createResultsList() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var resultsSummary = storeHrs[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
+      this.resultsList.push(resultsSummary);
+    }
+  },
+
+  appendTotalCookies() {
+    var sum = 0;
+    for(var i = 0; i < storeHrs.length; i++){
+      sum += this.cookiesPurchased[i];
+    }
+    var message = 'Total: ' + sum + ' cookies';
+    this.resultsList.push(message);
+  },
+
+  // render list in html
+  renderResultsList() {
+    // create list title
+    var resultsListTitle = document.createElement('h2');
+    var titleText = document.createTextNode(this.address);
+    resultsListTitle.appendChild(titleText);
+    var position = document.getElementsByTagName('body')[0];
+    position.appendChild(resultsListTitle);
+
+    // create ordered list as a child of that title
+    var newList = document.createElement('ul');
+    for(var i = 0; i < this.resultsList.length; i++){
+      var newListItem = document.createElement('li');
+      var listItemText = document.createTextNode(this.resultsList[i]);
+      newListItem.appendChild(listItemText);
+      newList.appendChild(newListItem);
+    }
+
+    position.appendChild(newList);
+
+  }
+
+
+};
+
+var seaTac = {
+  address: 'SeaTac Airport',
+  minCust: 3,
+  maxCust: 24,
+  avgCookies: 1.2,
+  cookiesPurchased: [],
+  resultsList: [],
+
+  // generate a random number
+  randNumCustGenerator() {
+    return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
+  },
+
+  // build out the cookiesPurchased arr using random number generator
+  cookiesPurchasedAtEachHour() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
+    }
+  },
+
+  // create a new message that concatonates values from different arrays
+  // this text will be displayed in our webpage.
+  createResultsList() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var resultsSummary = storeHrs[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
+      this.resultsList.push(resultsSummary);
+    }
+  },
+
+  appendTotalCookies() {
+    var sum = 0;
+    for(var i = 0; i < storeHrs.length; i++){
+      sum += this.cookiesPurchased[i];
+    }
+    var message = 'Total: ' + sum + ' cookies';
+    this.resultsList.push(message);
+  },
+
+  // render list in html
+  renderResultsList() {
+    // create list title
+    var resultsListTitle = document.createElement('h2');
+    var titleText = document.createTextNode(this.address);
+    resultsListTitle.appendChild(titleText);
+    var position = document.getElementsByTagName('body')[0];
+    position.appendChild(resultsListTitle);
+
+    // create ordered list as a child of that title
+    var newList = document.createElement('ul');
+    for(var i = 0; i < this.resultsList.length; i++){
+      var newListItem = document.createElement('li');
+      var listItemText = document.createTextNode(this.resultsList[i]);
+      newListItem.appendChild(listItemText);
+      newList.appendChild(newListItem);
+    }
+
+    position.appendChild(newList);
+
   }
 
 };
 
+var seattleCenter = {
+  address: 'Seattle Center',
+  minCust: 24,
+  maxCust: 38,
+  avgCookies: 3.7,
+  cookiesPurchased: [],
+  resultsList: [],
 
-// run a for loop and calculate randNumCustGenerator (for loop is same size as store hours)
-// create an array at each location
-// compute total cookies avg * num cust (must iterate through numCust (!) within each location)
-// Do we need to call marketObject function again?
-for(var i = 0; i < market.locations.length; i++){
-  for(var j = 0; j < storeHrs.length; j++){
-    var newNumCust = market.randNumCustGenerator(market.locations[i].minCust,
-      market.locations[i].maxCust);
-    //console.log(newNumCust);
-    var cookiesPurchasedNow = newNumCust * market.locations[i].avgCookies;
+  // generate a random number
+  randNumCustGenerator() {
+    return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
+  },
 
-    market.locations[i].cookiesPurchased.push(cookiesPurchasedNow);
-  }
-}
-
-//console.log(market.locations[4].cookiesPurchased);
-
-
-//////////////////////////////////////////////////////////////////////////////
-
-
-// will need to generate new list to display on webpage
-
-//need to iterate over every index of cookies purchased
-// will need to add these values to a new array of objects (we would use a
-// new constructor and input these values in)
-
-function generateResultsList(marketObject, newObject) {
-  for(var i = 0; i < marketObject.locations.length; i++){
-    var franchiseName = marketObject.locations[i].address;
-    newObject.locationsCopy.push(franchiseName);
-    var cookieSales = [];
-    for(var j = 0; j < storeHrs.length; j++){
-      var cookieSummaryByHr = storeHrs[j] + ': ' +
-                marketObject.locations[i].cookiesPurchased[j] + ' cookies purchased';
-      cookieSales.push([cookieSummaryByHr]);
+  // build out the cookiesPurchased arr using random number generator
+  cookiesPurchasedAtEachHour() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
     }
-    newObject.locationsCopy.push([cookieSales]);
-  }
-  return newObject;
-}
+  },
 
-var resultsList = {
-  locationsCopy: []
+  // create a new message that concatonates values from different arrays
+  // this text will be displayed in our webpage.
+  createResultsList() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var resultsSummary = storeHrs[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
+      this.resultsList.push(resultsSummary);
+    }
+  },
+
+  appendTotalCookies() {
+    var sum = 0;
+    for(var i = 0; i < storeHrs.length; i++){
+      sum += this.cookiesPurchased[i];
+    }
+    var message = 'Total: ' + sum + ' cookies';
+    this.resultsList.push(message);
+  },
+
+  // render list in html
+  renderResultsList() {
+    // create list title
+    var resultsListTitle = document.createElement('h2');
+    var titleText = document.createTextNode(this.address);
+    resultsListTitle.appendChild(titleText);
+    var position = document.getElementsByTagName('body')[0];
+    position.appendChild(resultsListTitle);
+
+    // create ordered list as a child of that title
+    var newList = document.createElement('ul');
+    for(var i = 0; i < this.resultsList.length; i++){
+      var newListItem = document.createElement('li');
+      var listItemText = document.createTextNode(this.resultsList[i]);
+      newListItem.appendChild(listItemText);
+      newList.appendChild(newListItem);
+    }
+
+    position.appendChild(newList);
+
+  }
 };
-resultsList = generateResultsList(market, resultsList);
 
-console.log(resultsList);
+var capitolHill = {
+  address: 'Capitol Hill',
+  minCust: 20,
+  maxCust: 38,
+  avgCookies: 2.3,
+  cookiesPurchased: [],
+  resultsList: [],
 
+  // generate a random number
+  randNumCustGenerator() {
+    return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
+  },
 
-//////////////////////////////////////////////////////////////////////////////
+  // build out the cookiesPurchased arr using random number generator
+  cookiesPurchasedAtEachHour() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
+    }
+  },
 
+  // create a new message that concatonates values from different arrays
+  // this text will be displayed in our webpage.
+  createResultsList() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var resultsSummary = storeHrs[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
+      this.resultsList.push(resultsSummary);
+    }
+  },
 
-// will then need to add list items to html file
+  appendTotalCookies() {
+    var sum = 0;
+    for(var i = 0; i < storeHrs.length; i++){
+      sum += this.cookiesPurchased[i];
+    }
+    var message = 'Total: ' + sum + ' cookies';
+    this.resultsList.push(message);
+  },
 
-// Find Our <ul>
-for(var k = 0; k < resultsList.length-2; k+=2){
-  for(var l = 0; l < storeHrs.length; l++){
-    // get into salesList section
-    var salesList = document.getElementsByClassName('salesListSection');
-    // Create a new List Item in the DOM
-    var newSalesListTitle = document.createElement('h2');
-    newSalesListTitle.textContent = resultsList[k];
-    var newUl = document.createElement('ul');
-    var newLi = document.createElement('li');
-    newLi.textContent = resultsList[k][l];
-    salesList.appendChild(newUl);
-    newUl.appendChild(newLi);
+  // render list in html
+  renderResultsList() {
+    // create list title
+    var resultsListTitle = document.createElement('h2');
+    var titleText = document.createTextNode(this.address);
+    resultsListTitle.appendChild(titleText);
+    var position = document.getElementsByTagName('body')[0];
+    position.appendChild(resultsListTitle);
+
+    // create ordered list as a child of that title
+    var newList = document.createElement('ul');
+    for(var i = 0; i < this.resultsList.length; i++){
+      var newListItem = document.createElement('li');
+      var listItemText = document.createTextNode(this.resultsList[i]);
+      newListItem.appendChild(listItemText);
+      newList.appendChild(newListItem);
+    }
+
+    position.appendChild(newList);
+
   }
-}
+};
 
+var alki = {
+  address: 'Alki',
+  minCust: 2,
+  maxCust: 16,
+  avgCookies: 4.6,
+  cookiesPurchased: [],
+  resultsList: [],
+
+  // generate a random number
+  randNumCustGenerator() {
+    return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
+  },
+
+  // build out the cookiesPurchased arr using random number generator
+  cookiesPurchasedAtEachHour() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
+    }
+  },
+
+  // create a new message that concatonates values from different arrays
+  // this text will be displayed in our webpage.
+  createResultsList() {
+    for(var i = 0; i < storeHrs.length; i++){
+      var resultsSummary = storeHrs[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
+      this.resultsList.push(resultsSummary);
+    }
+  },
+
+  appendTotalCookies() {
+    var sum = 0;
+    for(var i = 0; i < storeHrs.length; i++){
+      sum += this.cookiesPurchased[i];
+    }
+    var message = 'Total: ' + sum + ' cookies';
+    this.resultsList.push(message);
+  },
+
+  // render list in html
+  renderResultsList() {
+    // create list title
+    var resultsListTitle = document.createElement('h2');
+    var titleText = document.createTextNode(this.address);
+    resultsListTitle.appendChild(titleText);
+    var position = document.getElementsByTagName('body')[0];
+    position.appendChild(resultsListTitle);
+
+    // create ordered list as a child of that title
+    var newList = document.createElement('ul');
+    for(var i = 0; i < this.resultsList.length; i++){
+      var newListItem = document.createElement('li');
+      var listItemText = document.createTextNode(this.resultsList[i]);
+      newListItem.appendChild(listItemText);
+      newList.appendChild(newListItem);
+    }
+
+    position.appendChild(newList);
+
+  }
+};
+
+var locationsArray = [pikes, seaTac, seattleCenter, capitolHill, alki];
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+// run methods and generate sales data
+
+for(var i = 0; i < locationsArray.length; i++){
+  var store = locationsArray[i];
+  store.cookiesPurchasedAtEachHour();
+  // console.log(store.cookiesPurchased);
+  store.createResultsList();
+  store.appendTotalCookies();
+  // console.log(store.resultsList);
+  store.renderResultsList();
+}
 
