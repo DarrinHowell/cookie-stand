@@ -189,11 +189,7 @@ for(var i = 0; i < Location.locations.length; i++){
   var store = Location.locations[i];
   store.cookiesPurchasedAtEachHour();
   store.createResultsList();
-  store.appendTotalCookies();
   store.renderResultsRow();
-  // console.log(store.cookiesPurchased);
-  // console.log(store.resultsList);
-  //store.renderResultsList();
 }
 
 // generate last row of table
