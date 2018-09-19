@@ -126,7 +126,7 @@ var alki = new Location('Alki', 2, 16, 4.6);
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-// generate table head
+// generate table head function
 // need to stick head onto body
 function tableHeadGenerator(tableHeadLabels){
   // create elements and append them to one another according to parent child heirarchy
