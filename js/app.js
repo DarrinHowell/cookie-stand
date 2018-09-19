@@ -16,7 +16,7 @@ var tableHeadLabels = [
   '9am',
   '10am',
   '11am',
-  '12am',
+  '12pm',
   '1pm',
   '2pm',
   '3pm',
@@ -42,6 +42,9 @@ var Location = function(address, minCust, maxCust, avgCookies) {
 };
 
 
+Location.locations = [];
+console.log(Location.locations);
+
 Location.prototype.randNumCustGenerator = function() {
   return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
 };
@@ -54,7 +57,9 @@ Location.prototype.cookiesPurchasedAtEachHour = function() {
     var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
     this.cookiesPurchased.push(cookiesPurchasedNow);
   }
+  console.log('length of cookiesPurchased before appending toal is: ', this.cookiesPurchased.length);
   this.cookiesPurchased.push(this.appendTotalCookies());
+  console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
 };
 
 
@@ -87,29 +92,23 @@ Location.prototype.renderResultsRow = function() {
   // generate a new row each time we run computations on a new object
   var newRow = document.createElement('tr');
 
-  // create a row showing projection of num cookies purchased at each hour for each location
+  var newTd = document.createElement('td');
+  var tdText = document.createTextNode(this.address);
+  newTd.appendChild(tdText);
+  newRow.appendChild(newTd);
+
+  // *******create a row showing projection of num cookies purchased at each hour for each location
+  // missing the first row here.
   for(var i = 0; i < this.cookiesPurchased.length; i++){
-
-    if(i === 0){
-      var newTd = document.createElement('td');
-      var tdText = document.createTextNode(this.address);
-      newTd.appendChild(tdText);
-
-    } else {
-      newTd = document.createElement('td');
-      tdText = document.createTextNode(this.cookiesPurchased[i]);
-      newTd.appendChild(tdText);
-    }
-
+    newTd = document.createElement('td');
+    tdText = document.createTextNode(this.cookiesPurchased[i]);
+    newTd.appendChild(tdText);
     newRow.appendChild(newTd);
   }
 
   position.appendChild(newRow);
 
 };
-
-
-Location.locations = [];
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,21 +135,19 @@ function tableHeadGenerator(tableHeadLabels){
   var tableRow = document.createElement('tr');
   var tableBody = document.createElement('tbody');
 
+  var columnHeading = document.createElement('th');
+  var columnText = document.createTextNode('');
+  columnHeading.appendChild(columnText);
+  tableRow.appendChild(columnHeading);
+
   // create column headings according to storeHrs array elements
   for(var i = 0; i < tableHeadLabels.length; i++){
-    if(i === 0){
-      var columnHeading = document.createElement('th');
-      var columnText = document.createTextNode('');
-      columnHeading.appendChild(columnText);
-      tableRow.appendChild(columnHeading);
-    } else {
-      columnHeading = document.createElement('th');
-      columnText = document.createTextNode(tableHeadLabels[i]);
-      columnHeading.appendChild(columnText);
-      tableRow.appendChild(columnHeading);
-    }
-
+    columnHeading = document.createElement('th');
+    columnText = document.createTextNode(tableHeadLabels[i]);
+    columnHeading.appendChild(columnText);
+    tableRow.appendChild(columnHeading);
   }
+
 
   //append the child to the parent
   tableHead.appendChild(tableRow);
