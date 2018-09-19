@@ -76,24 +76,31 @@ Location.prototype.appendTotalCookAndLabels = function() {
 };
 
 // render list in html
-Location.prototype.renderResultsList = function() {
-  // create list title
-  var resultsListTitle = document.createElement('h2');
-  var titleText = document.createTextNode(this.address);
-  resultsListTitle.appendChild(titleText);
-  var position = document.createElement('body')[0];
-  position.appendChild(resultsListTitle);
+Location.prototype.renderResultsRow = function() {
+  // grab body tag
+  var position = document.getElementsByTagName('tbody')[0];
 
-  // create ordered list as a child of that title
-  var newList = document.createElement('ul');
-  for(var i = 0; i < this.resultsList.length; i++){
-    var newListItem = document.createElement('li');
-    var listItemText = document.createTextNode(this.resultsList[i]);
-    newListItem.appendChild(listItemText);
-    newList.appendChild(newListItem);
+  // generate a new row each time we run computations on a new object
+  var newRow = document.createElement('tr');
+
+  // create a row showing projection of num cookies purchased at each hour for each location 
+  for(var i = 0; i < this.cookiesPurchased.length; i++){
+
+    if(i === 0){
+      var newTd = document.createElement('td');
+      var tdText = document.createTextNode(this.address);
+      newTd.appendChild(tdText);
+
+    } else {
+      newTd = document.createElement('td');
+      tdText = document.createTextNode(this.cookiesPurchased[i]);
+      newTd.appendChild(tdText);
+    }
+
+    newRow.appendChild(newTd);
   }
 
-  position.appendChild(newList);
+  position.appendChild(newRow);
 
 };
 
@@ -123,9 +130,7 @@ function tableHeadGenerator(tableHeadLabels){
   var tableNode = document.createElement('table');
   var tableHead = document.createElement('thead');
   var tableRow = document.createElement('tr');
-
-
-
+  var tableBody = document.createElement('tbody');
 
   // create column headings according to storeHrs array elements
   for(var i = 0; i < tableHeadLabels.length; i++){
@@ -143,30 +148,28 @@ function tableHeadGenerator(tableHeadLabels){
 
   }
 
+  //append the child to the parent
   tableHead.appendChild(tableRow);
   tableNode.appendChild(tableHead);
+  tableNode.appendChild(tableBody);
   position.appendChild(tableNode);
-
-  return position;
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+// generate table head + labels
+tableHeadGenerator(tableHeadLabels);
 
 // run methods, generate sales data,
-
 for(var i = 0; i < Location.locations.length; i++){
   var store = Location.locations[i];
   store.cookiesPurchasedAtEachHour();
-  // console.log(store.cookiesPurchased);
   store.createResultsList();
   store.appendTotalCookAndLabels();
+  store.renderResultsRow();
+  // console.log(store.cookiesPurchased);
   // console.log(store.resultsList);
   //store.renderResultsList();
 }
-
-var tableHead = tableHeadGenerator(tableHeadLabels);
-// console.log(tableHead);
-
