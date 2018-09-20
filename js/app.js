@@ -97,7 +97,7 @@ Location.prototype.renderResultsRow = function() {
   newTd.appendChild(tdText);
   newRow.appendChild(newTd);
 
-  // *******create a row showing projection of num cookies purchased at each hour for each location
+  // create a row showing projection of num cookies purchased at each hour for each location
   // missing the first row here.
   for(var i = 0; i < this.cookiesPurchased.length; i++){
     newTd = document.createElement('td');
@@ -110,20 +110,14 @@ Location.prototype.renderResultsRow = function() {
 
 };
 
-////////////////////////////////////////////////////////////////////////////////////////
-
-// generate new objects according to the specs on our report
-// parameters: address, minCust, maxCust, avgCookies
-// automatically add them to the Location.locations array (contains list of objects)
-
-var pikes = new Location('1st and Pike', 23, 65, 6.3);
-var seaTac = new Location('SeaTac Airport', 3, 24, 1.2);
-var seattleCenter = new Location('Seattle Center', 11, 38, 3.7);
-var capitolHill = new Location('Capitol Hill', 20, 38, 2.3);
-var alki = new Location('Alki', 2, 16, 4.6);
-
-////////////////////////////////////////////////////////////////////////////////////////
-
+function renderTableData() {
+  for(var i = 0; i < Location.locations.length; i++){
+    var store = Location.locations[i];
+    store.cookiesPurchasedAtEachHour();
+    store.createResultsList();
+    store.renderResultsRow();
+  }
+}
 
 // generate table head function
 // need to stick head onto body
@@ -148,8 +142,6 @@ function tableHeadGenerator(tableHeadLabels){
     tableRow.appendChild(columnHeading);
   }
 
-
-  //append the child to the parent
   tableHead.appendChild(tableRow);
   tableNode.appendChild(tableHead);
   tableNode.appendChild(tableBody);
@@ -157,6 +149,7 @@ function tableHeadGenerator(tableHeadLabels){
 
 }
 
+// generate footer function
 function tableFooterGenerator(tableHeadLabels){
   var position = document.getElementsByTagName('table')[0];
   var newRow = document.createElement('tr');
@@ -175,19 +168,26 @@ function tableFooterGenerator(tableHeadLabels){
   position.appendChild(newRow);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+
+// generate new objects according to the specs on our report
+// parameters: address, minCust, maxCust, avgCookies
+// automatically add them to the Location.locations array (contains list of objects)
+
+var pikes = new Location('1st and Pike', 23, 65, 6.3);
+var seaTac = new Location('SeaTac Airport', 3, 24, 1.2);
+var seattleCenter = new Location('Seattle Center', 11, 38, 3.7);
+var capitolHill = new Location('Capitol Hill', 20, 38, 2.3);
+var alki = new Location('Alki', 2, 16, 4.6);
 
 ////////////////////////////////////////////////////////////////////////////////////////
+
 
 // generate table head + labels
 tableHeadGenerator(tableHeadLabels);
 
 // run methods, generate sales data, render table rows one by one
-for(var i = 0; i < Location.locations.length; i++){
-  var store = Location.locations[i];
-  store.cookiesPurchasedAtEachHour();
-  store.createResultsList();
-  store.renderResultsRow();
-}
+renderTableData();
 
 // generate last row of table
 tableFooterGenerator(tableHeadLabels);
