@@ -8,6 +8,12 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+// grab body object
+var body = document.getElementsByTagName('body')[0];
+var table = document.createElement('table');
+body.appendChild(table);
+var formPosition = document.getElementById('locationForm');
+
 // initialize tableHeadLabels array and object constructor (w/ prototype functions)
 var tableHeadLabels = [
   '6am',
@@ -39,16 +45,33 @@ var Location = function(address, minCust, maxCust, avgCookies) {
   this.resultsList = [];
 
   Location.locations.push(this);
+
+  this.cookiesPurchasedAtEachHour = function () {
+    for(var i = 0; i < tableHeadLabels.length-1; i++){
+      var numCust = this.randNumCustGenerator();
+      //console.log(numCust);
+      var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
+      this.cookiesPurchased.push(cookiesPurchasedNow);
+    }
+    //console.log('length of cookiesPurchased before appending toal is: ', this.cookiesPurchased.length);
+    this.cookiesPurchased.push(this.appendTotalCookies());
+    //console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
+
+  };
+
+  this.cookiesPurchasedAtEachHour();
+
 };
 
 
 Location.locations = [];
-console.log(Location.locations);
+//console.log(Location.locations);
 
 Location.prototype.randNumCustGenerator = function() {
   return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
 };
 
+/*
 // build out the cookiesPurchased arr using random number generator
 Location.prototype.cookiesPurchasedAtEachHour = function() {
   for(var i = 0; i < tableHeadLabels.length-1; i++){
@@ -61,6 +84,7 @@ Location.prototype.cookiesPurchasedAtEachHour = function() {
   this.cookiesPurchased.push(this.appendTotalCookies());
   console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
 };
+*/
 
 
 // create a new message that concatonates values from different arrays
@@ -97,7 +121,7 @@ Location.prototype.renderResultsRow = function() {
   newTd.appendChild(tdText);
   newRow.appendChild(newTd);
 
-  // *******create a row showing projection of num cookies purchased at each hour for each location
+  // create a row showing projection of num cookies purchased at each hour for each location
   // missing the first row here.
   for(var i = 0; i < this.cookiesPurchased.length; i++){
     newTd = document.createElement('td');
@@ -110,27 +134,24 @@ Location.prototype.renderResultsRow = function() {
 
 };
 
-////////////////////////////////////////////////////////////////////////////////////////
+// separate these two
+function renderTableData() {
+  for(var i = 0; i < Location.locations.length; i++){
+    var store = Location.locations[i];
+    //store.createResultsList();
+    store.renderResultsRow();
+  }
+}
 
-// generate new objects according to the specs on our report
-// parameters: address, minCust, maxCust, avgCookies
-// automatically add them to the Location.locations array (contains list of objects)
-
-var pikes = new Location('1st and Pike', 23, 65, 6.3);
-var seaTac = new Location('SeaTac Airport', 3, 24, 1.2);
-var seattleCenter = new Location('Seattle Center', 11, 38, 3.7);
-var capitolHill = new Location('Capitol Hill', 20, 38, 2.3);
-var alki = new Location('Alki', 2, 16, 4.6);
-
-////////////////////////////////////////////////////////////////////////////////////////
 
 
 // generate table head function
 // need to stick head onto body
-function tableHeadGenerator(tableHeadLabels){
+function tableHeadGenerator(){
   // create elements and append them to one another according to parent child heirarchy
-  var position = document.getElementsByTagName('body')[0];
-  var tableNode = document.createElement('table');
+
+  //var tableNode = document.createElement('table');
+
   var tableHead = document.createElement('thead');
   var tableRow = document.createElement('tr');
   var tableBody = document.createElement('tbody');
@@ -148,46 +169,89 @@ function tableHeadGenerator(tableHeadLabels){
     tableRow.appendChild(columnHeading);
   }
 
-
-  //append the child to the parent
   tableHead.appendChild(tableRow);
-  tableNode.appendChild(tableHead);
-  tableNode.appendChild(tableBody);
-  position.appendChild(tableNode);
+  table.appendChild(tableHead);
+  table.appendChild(tableBody);
+  //position.appendChild(tableNode);
 
 }
 
-function tableFooterGenerator(tableHeadLabels){
-  var position = document.getElementsByTagName('table')[0];
+// generate footer function
+function tableFooterGenerator(){
+  //var position = document.getElementsByTagName('table')[0];
   var newRow = document.createElement('tr');
-  for(var i = 0; i < tableHeadLabels.length; i++){
-    if(i === 0){
-      var newTd = document.createElement('td');
-      var newTdText = document.createTextNode('Total');
-      newTd.appendChild(newTdText);
-    } else {
-      newTd = document.createElement('td');
-      newTdText = document.createTextNode('');
-      newTd.appendChild(newTdText);
+  var newTd = document.createElement('td');
+  var newTdText = document.createTextNode('Total');
+  newTd.appendChild(newTdText);
+  newRow.appendChild(newTd);
+  table.appendChild(newRow);
+
+  var cookiePurArrLength = Location.locations[0].cookiesPurchased.length;
+  console.log('length of cookiePurchase array: ', cookiePurArrLength);
+  // Location.locations.cookiespurchased.lenght is undefined can't access cookies purchased like that. 
+  var colSum = 0;
+  for(var i = 0; i < cookiePurArrLength; i++){
+    for(var j = 0; j < Location.locations.length; j++){
+      colSum += Location.locations[j].cookiesPurchased[i];
+      console.log('we inside!');
     }
+    //console.log('col sum is: ' + colSum);
+    newTd = document.createElement('td');
+    newTdText = document.createTextNode(colSum);
+    newTd.appendChild(newTdText);
     newRow.appendChild(newTd);
+    table.appendChild(newRow);
+    colSum = 0;
   }
-  position.appendChild(newRow);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+// generate new objects according to the specs on our report
+// parameters: address, minCust, maxCust, avgCookies
+// automatically add them to the Location.locations array (contains list of objects)
+
+var pikes = new Location('1st and Pike', 23, 65, 6.3);
+var seaTac = new Location('SeaTac Airport', 3, 24, 1.2);
+var seattleCenter = new Location('Seattle Center', 11, 38, 3.7);
+var capitolHill = new Location('Capitol Hill', 20, 38, 2.3);
+var alki = new Location('Alki', 2, 16, 4.6);
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
 // generate table head + labels
-tableHeadGenerator(tableHeadLabels);
+tableHeadGenerator();
 
 // run methods, generate sales data, render table rows one by one
-for(var i = 0; i < Location.locations.length; i++){
-  var store = Location.locations[i];
-  store.cookiesPurchasedAtEachHour();
-  store.createResultsList();
-  store.renderResultsRow();
-}
+renderTableData();
 
 // generate last row of table
-tableFooterGenerator(tableHeadLabels);
+tableFooterGenerator();
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+// initialize event listener and event handler
+// storeName, minimumCust, maximumCust, avgCookies
+function addLocation(event){
+  event.preventDefault();
+
+  var newStoreName = event.target.storeName.value;
+  var newMinimumCust =parseInt(event.target.minimumCust.value);
+  var newMaximumCust = parseInt(event.target.maximumCust.value);
+  var newAvgCookies = parseInt(event.target.avgCookies.value);
+
+  new Location(newStoreName, newMinimumCust, newMaximumCust, newAvgCookies);
+
+  table.innerHTML = '';
+  tableHeadGenerator();
+  renderTableData();
+  tableFooterGenerator();
+}
+
+formPosition.addEventListener('submit', addLocation);
+
+
