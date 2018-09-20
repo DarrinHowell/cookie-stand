@@ -71,21 +71,6 @@ Location.prototype.randNumCustGenerator = function() {
   return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
 };
 
-/*
-// build out the cookiesPurchased arr using random number generator
-Location.prototype.cookiesPurchasedAtEachHour = function() {
-  for(var i = 0; i < tableHeadLabels.length-1; i++){
-    var numCust = this.randNumCustGenerator();
-    //console.log(numCust);
-    var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
-    this.cookiesPurchased.push(cookiesPurchasedNow);
-  }
-  console.log('length of cookiesPurchased before appending toal is: ', this.cookiesPurchased.length);
-  this.cookiesPurchased.push(this.appendTotalCookies());
-  console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
-};
-*/
-
 
 // create a new message that concatonates values from different arrays
 // this text will be displayed in our webpage.
