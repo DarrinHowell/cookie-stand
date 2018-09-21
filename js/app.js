@@ -9,9 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 // grab body object
-var body = document.getElementsByTagName('body')[0];
-var table = document.createElement('table');
-body.appendChild(table);
+var table = document.getElementsByTagName('table')[0];
 var formPosition = document.getElementById('locationForm');
 
 // initialize tableHeadLabels array and object constructor (w/ prototype functions)
@@ -49,14 +47,10 @@ var Location = function(address, minCust, maxCust, avgCookies) {
   this.cookiesPurchasedAtEachHour = function () {
     for(var i = 0; i < tableHeadLabels.length-1; i++){
       var numCust = this.randNumCustGenerator();
-      //console.log(numCust);
       var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
       this.cookiesPurchased.push(cookiesPurchasedNow);
     }
-    //console.log('length of cookiesPurchased before appending toal is: ', this.cookiesPurchased.length);
     this.cookiesPurchased.push(this.appendTotalCookies());
-    //console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
-
   };
 
   this.cookiesPurchasedAtEachHour();
@@ -71,39 +65,12 @@ Location.prototype.randNumCustGenerator = function() {
   return Math.floor(Math.random() * (this.maxCust-this.minCust)+ this.minCust);
 };
 
-/*
-// build out the cookiesPurchased arr using random number generator
-Location.prototype.cookiesPurchasedAtEachHour = function() {
-  for(var i = 0; i < tableHeadLabels.length-1; i++){
-    var numCust = this.randNumCustGenerator();
-    //console.log(numCust);
-    var cookiesPurchasedNow = Math.floor(numCust * this.avgCookies);
-    this.cookiesPurchased.push(cookiesPurchasedNow);
-  }
-  console.log('length of cookiesPurchased before appending toal is: ', this.cookiesPurchased.length);
-  this.cookiesPurchased.push(this.appendTotalCookies());
-  console.log('length of cookiesPurchased after appending toal is: ', this.cookiesPurchased.length);
-};
-*/
-
-
-// create a new message that concatonates values from different arrays
-// this text will be displayed in our webpage.
-Location.prototype.createResultsList = function() {
-  for(var i = 0; i < tableHeadLabels.length; i++){
-    var resultsSummary = tableHeadLabels[i] + ': ' + this.cookiesPurchased[i] + ' cookies';
-    this.resultsList.push(resultsSummary);
-  }
-};
-
 
 Location.prototype.appendTotalCookies = function() {
   var sum = 0;
   for(var i = 0; i < tableHeadLabels.length-1; i++){
     sum += this.cookiesPurchased[i];
   }
-  // var message = 'Total: ' + sum + ' cookies';
-  //this.resultsList.push(message);
   return sum;
 };
 
@@ -138,7 +105,6 @@ Location.prototype.renderResultsRow = function() {
 function renderTableData() {
   for(var i = 0; i < Location.locations.length; i++){
     var store = Location.locations[i];
-    //store.createResultsList();
     store.renderResultsRow();
   }
 }
@@ -149,9 +115,6 @@ function renderTableData() {
 // need to stick head onto body
 function tableHeadGenerator(){
   // create elements and append them to one another according to parent child heirarchy
-
-  //var tableNode = document.createElement('table');
-
   var tableHead = document.createElement('thead');
   var tableRow = document.createElement('tr');
   var tableBody = document.createElement('tbody');
@@ -172,35 +135,33 @@ function tableHeadGenerator(){
   tableHead.appendChild(tableRow);
   table.appendChild(tableHead);
   table.appendChild(tableBody);
-  //position.appendChild(tableNode);
 
 }
 
 // generate footer function
 function tableFooterGenerator(){
-  //var position = document.getElementsByTagName('table')[0];
+  var tfoot = document.createElement('tfoot');
   var newRow = document.createElement('tr');
   var newTd = document.createElement('td');
   var newTdText = document.createTextNode('Total');
   newTd.appendChild(newTdText);
   newRow.appendChild(newTd);
-  table.appendChild(newRow);
+  tfoot.appendChild(newRow);
 
   var cookiePurArrLength = Location.locations[0].cookiesPurchased.length;
   console.log('length of cookiePurchase array: ', cookiePurArrLength);
-  // Location.locations.cookiespurchased.lenght is undefined can't access cookies purchased like that. 
   var colSum = 0;
   for(var i = 0; i < cookiePurArrLength; i++){
     for(var j = 0; j < Location.locations.length; j++){
       colSum += Location.locations[j].cookiesPurchased[i];
       console.log('we inside!');
     }
-    //console.log('col sum is: ' + colSum);
     newTd = document.createElement('td');
     newTdText = document.createTextNode(colSum);
     newTd.appendChild(newTdText);
     newRow.appendChild(newTd);
-    table.appendChild(newRow);
+    tfoot.appendChild(newRow);
+    table.appendChild(tfoot);
     colSum = 0;
   }
 }

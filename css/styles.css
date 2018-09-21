@@ -1,4 +1,25 @@
-tr{
-    margin: 10px;
-    border: 5px;
+body {
+    background-color:  #397aac;
+    color: #cccccc;
 }
+
+header {
+    text-align: center;
+    border: #687f91;
+}
+
+label {
+    display: block;
+    border: 20%;
+    color: #cccccc;
+}
+
+td{
+    padding: 1em;
+    border: 3px #687f91;
+}
+
+th {
+    border-bottom-color: dodgerblue;
+}
+
