@@ -14,12 +14,25 @@ label {
     color: #cccccc;
 }
 
-td{
+table {
+    margin: 2%;
+}
+
+td {
     padding: 1em;
-    border: 3px #687f91;
+    border: 6px outset aqua;
 }
 
 th {
     border-bottom-color: dodgerblue;
+}
+
+fieldset {
+    padding: 0.5%;
+    display: inline-block;
+}
+
+legend {
+    margin: 1%;
 }
 
