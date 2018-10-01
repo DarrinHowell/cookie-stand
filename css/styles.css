@@ -3,7 +3,10 @@
 }
 
 body {
-    background-color:  #397aac;
+    /* background-color:  #397aac; */
+    /* background: url(img/Waterfront-720x313-2.jpg); */
+    background: url(/img/cutter.jpeg);
+    background-size: 150px;
     color: #cccccc;
 }
 
@@ -52,3 +55,11 @@ legend {
 .sidebar {
     float: right;
 }
+
+/* new css added for resubmit  */
+
+/* .background {
+    background: url(/img/cutter.jpeg);
+    background-size: 150px;
+} */
+
